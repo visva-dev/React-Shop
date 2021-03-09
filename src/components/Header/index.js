@@ -16,27 +16,24 @@ const Header = (props) => {
           </Link>
         </div>
         <div className='callToActions'>
-        {currentUser && (
-          <ul>
-            <li>
-              <span onClick={() => auth.signOut()}>
-                LogOut
-              </span>
-            </li>
-          </ul>
-        )}
+          {currentUser && (
+            <ul>
+              <li>
+                <Link to='/dashboard'>My Account</Link>
+              </li>
+              <li>
+                <span onClick={() => auth.signOut()}>LogOut</span>
+              </li>
+            </ul>
+          )}
 
-        {!currentUser && (
-          <ul>
-            <li>
-              <Link to="/registration">
-                Register
-            </Link>
-            </li>
-            <li>
-              <Link to="/login">
-                Login
-            </Link>
+          {!currentUser && (
+            <ul>
+              <li>
+                <Link to='/registration'>Register</Link>
+              </li>
+              <li>
+                <Link to='/login'>Login</Link>
               </li>
             </ul>
           )}
@@ -47,11 +44,11 @@ const Header = (props) => {
 };
 
 Header.defaultProps = {
-  currentUser: null
+  currentUser: null,
 };
 
 const mapStateToProps = ({ user }) => ({
-  currentUser: user.currentUser
+  currentUser: user.currentUser,
 });
 
 export default connect(mapStateToProps, null)(Header);
