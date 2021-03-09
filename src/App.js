@@ -4,12 +4,13 @@ import { auth, handleUserProfile } from './firebase/utils';
 
 // layouts
 import MainLayout from './layouts/MainLayout';
-import HomePageLayout from './layouts/HomePageLayout';
+import HomepageLayout from './layouts/HomePageLayout';
 
 // pages
 import Homepage from './pages/Homepage';
 import Registration from './pages/Registration';
 import Login from './pages/Login';
+import Recovery from './pages/Recovery';
 import './default.scss';
 
 const initialState = {
@@ -27,21 +28,22 @@ class App extends Component {
   authListener = null;
 
   componentDidMount() {
-    this.authListener = auth.onAuthStateChanged(async userAuth => {
+    this.authListener = auth.onAuthStateChanged(async (userAuth) => {
       if (userAuth) {
         const userRef = await handleUserProfile(userAuth);
-        userRef.onSnapshot(snapshot => {
+        userRef.onSnapshot((snapshot) => {
           this.setState({
             currentUser: {
               id: snapshot.id,
-              ...snapshot.data()
-            }
-          })
-        })
+              ...snapshot.data(),
+            },
+          });
+        });
       }
+
       this.setState({
-        ...initialState
-      })
+        ...initialState,
+      });
     });
   }
 
@@ -51,6 +53,7 @@ class App extends Component {
 
   render() {
     const { currentUser } = this.state;
+
     return (
       <div className='App'>
         <Switch>
@@ -58,18 +61,22 @@ class App extends Component {
             exact
             path='/'
             render={() => (
-              <HomePageLayout currentUser={currentUser}>
+              <HomepageLayout currentUser={currentUser}>
                 <Homepage />
-              </HomePageLayout>
+              </HomepageLayout>
             )}
           />
           <Route
             path='/registration'
-            render={() => (
-              <MainLayout currentUser={currentUser}>
-                <Registration />
-              </MainLayout>
-            )}
+            render={() =>
+              currentUser ? (
+                <Redirect to='/' />
+              ) : (
+                <MainLayout currentUser={currentUser}>
+                  <Registration />
+                </MainLayout>
+              )
+            }
           />
           <Route
             path='/login'
@@ -82,6 +89,14 @@ class App extends Component {
                 </MainLayout>
               )
             }
+          />
+          <Route
+            path='/recovery'
+            render={() => (
+              <MainLayout>
+                <Recovery />
+              </MainLayout>
+            )}
           />
         </Switch>
       </div>
